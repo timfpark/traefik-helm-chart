@@ -390,3 +390,12 @@ securityContext:
 
 podSecurityContext:
   fsGroup: 65532
+
+# tls:
+#   keyvault:
+#     name:
+#     resourceGroup:
+#     subscriptionId
+#     tenantId:
+#     certKeyName:
+#     keyKeyName:

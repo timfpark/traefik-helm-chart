@@ -1,0 +1,14 @@
+{{- if .Values.tls.keyvault }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-configuration
+  namespace: default
+  labels:
+    app: traefik
+data:
+  certificates.toml: |
+    [[tls.certificates]]
+      certFile = "/certs/{{ .Values.tls.keyvault.certKeyName }}"
+      keyFile = "/certs/{{ .Values.tls.keyvault.keyKeyName }}"
+{{- end }}
