@@ -148,6 +148,11 @@ spec:
           {{- end }}
           - "--api.dashboard=true"
           - "--ping=true"
+          {{- if .Values.tls }}
+          - "--entrypoints.web-secure.address=:443"
+          - "--providers.file.directory=/configuration/"
+          - "--providers.file.watch=true"
+          {{- end}}
           {{- if .Values.providers.kubernetesCRD.enabled }}
           - "--providers.kubernetescrd"
           {{- end }}
