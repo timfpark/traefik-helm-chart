@@ -250,6 +250,24 @@ spec:
         {{- toYaml .Values.deployment.additionalContainers | nindent 6 }}
       {{- end }}
       volumes:
+        - name: configuration
+          configMap:
+            name: traefik-configuration
+        {{- if .Values.tls.keyvault }}
+        - name: certs
+          flexVolume:
+            driver: "azure/kv"
+            secretRef:
+              name: kvcreds
+            options:
+              keyvaultname: "{{ .Values.tls.keyvault.name }}"
+              keyvaultobjectname: "{{ .Values.tls.keyvault.certKeyName }};{{ .Values.tls.keyvault.keyKeyName }}"
+              keyvaultobjecttype: "secret;secret"
+              tenantid: "{{ .Values.tls.keyvault.tenantId }}"
+              usepodidentity: "false"
+              resourcegroup: "{{ .Values.tls.keyvault.resourceGroup }}"
+              subscriptionid: "{{ .Values.tls.keyvault.subscriptionId }}"
+        {{- end }}
         - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
