@@ -89,14 +89,6 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        volumeMounts:
-        - name: configuration
-          mountPath: /configuration
-        {{- if .Values.tls.keyvault }}
-        - name: certs
-          mountPath: /certs
-          readOnly: true
-        {{- end }}
         ports:
         {{- range $name, $config := .Values.ports }}
         {{- if $config }}
@@ -152,11 +144,6 @@ spec:
           {{- if .Values.providers.kubernetesCRD.enabled }}
           - "--providers.kubernetescrd"
           {{- end }}
-          {{- if .Values.tls }}
-          - "--entrypoints.web-secure.address=:443"
-          - "--providers.file.directory=/configuration/"
-          - "--providers.file.watch=true"
-          {{- end}}
           {{- if .Values.providers.kubernetesIngress.enabled }}
           - "--providers.kubernetesingress"
           {{- if and .Values.service.enabled .Values.providers.kubernetesIngress.publishedService.enabled }}
@@ -277,24 +264,6 @@ spec:
         {{- if .Values.experimental.plugins.enabled }}
         - name: plugins
           emptyDir: {}
-        {{- end }}
-              - name: configuration
-        configMap:
-          name: traefik-configuration
-        {{- if .Values.tls.keyvault }}
-        - name: certs
-          flexVolume:
-            driver: "azure/kv"
-            secretRef:
-              name: kvcreds
-            options:
-              keyvaultname: "{{ .Values.tls.keyvault.name }}"
-              keyvaultobjectname: "{{ .Values.tls.keyvault.certKeyName }};{{ .Values.tls.keyvault.keyKeyName }}"
-              keyvaultobjecttype: "secret;secret"
-              tenantid: "{{ .Values.tls.keyvault.tenantId }}"
-              usepodidentity: "false"
-              resourcegroup: "{{ .Values.tls.keyvault.resourceGroup }}"
-              subscriptionid: "{{ .Values.tls.keyvault.subscriptionId }}"
         {{- end }}
       {{- with .Values.affinity }}
       affinity:
