@@ -149,7 +149,7 @@ spec:
           - "--api.dashboard=true"
           - "--ping=true"
           {{- if .Values.tls }}
-          - "--entrypoints.web-secure.address=:443"
+          - "--entrypoints.websecure.address=:8443"
           - "--providers.file.directory=/configuration/"
           - "--providers.file.watch=true"
           {{- end}}
